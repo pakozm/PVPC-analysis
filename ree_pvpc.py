@@ -50,7 +50,7 @@ def get_data_for_day(dt):
             dt = tz.localize( dt )
             times.append( dt )
             values.append( v * 0.001 )
-    return pd.Series( np.array(values), index=np.array(times) )
+    return pd.Series( data=np.array(values), index=np.array(times), name="GEN" )
 
 def daterange(start_date, end_date):
     for n in range(int ((end_date - start_date).days)):
@@ -61,9 +61,9 @@ def generate_series(start_str, stop_str):
     stop = tz.localize( datetime.datetime.strptime(stop_str, "%Y%m%d") )
     dt = start
     ts_list = [ get_data_for_day(dt) for dt in daterange(start,stop + datetime.timedelta(days=1)) ]
-    ts = pd.Series([],index=[]).append( ts_list )
+    ts = pd.Series([],index=[],name="GEN").append( ts_list )
     return ts
 
 if __name__ == "__main__":
     ts = generate_series(sys.argv[1], sys.argv[2])
-    ts.plot()
+    print ts.to_csv(None, header=True, index_label="datetime")
